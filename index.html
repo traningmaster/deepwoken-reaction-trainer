@@ -1,157 +1,238 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Deepwoken Reaction Trainer - Parry & Boss Practice</title>
-<meta name="description" content="Improve your Deepwoken skills! Practice parry timings, dodge mechanics, and boss fights against Primadon, Duke Erisia, Ferryman and Maestro.">
-<meta name="keywords" content="deepwoken, deepwoken training, deepwoken practice, parry trainer, roblox deepwoken">
-<style>
-:root{color-scheme:dark;--bg:#10131a;--panel:#1b2230;--line:#303b50;--text:#f3f5fb;--muted:#aeb8ca;--accent:#8fb4ff;--danger:#ff5c5c;--success:#4caf50}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#202c42,#10131a 65%);color:var(--text);font:16px system-ui,Segoe UI,sans-serif;min-height:100vh;display:grid;place-items:center;padding:20px;user-select:none}
-main{width:min(820px,100%)}h1{margin:0 0 6px;font-size:clamp(27px,5vw,40px)}p{color:var(--muted);line-height:1.5}.panel{background:#1b2230eF;border:1px solid var(--line);border-radius:18px;padding:20px;margin-top:16px;box-shadow:0 15px 50px #0004}
-.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}.row>*{flex:1}
-label{display:block;color:var(--muted);font-size:13px;margin-bottom:6px}select,input,button{font:inherit;border-radius:11px;border:1px solid var(--line);padding:12px;background:#111722;color:var(--text);width:100%}
-button{cursor:pointer;font-weight:700}
-button.primary{background:var(--accent);color:#101722;border-color:transparent}
-button.danger{background:var(--danger);color:#fff;border-color:transparent}
-button:disabled{opacity:.45;cursor:not-allowed}
-#cue{min-height:210px;display:grid;place-items:center;text-align:center;border:1px dashed #46536c;border-radius:16px;margin-top:16px;background:#121925;position:relative;overflow:hidden;cursor:crosshair}
-#cue strong{display:block;font-size:clamp(22px,5vw,36px);letter-spacing:1px}#cue span{display:block;color:var(--muted);margin-top:8px}
-.signal-orb{width:100px;height:100px;border-radius:50%;display:grid;place-items:center;margin:0 auto 10px;border:5px solid #ffffffa8;box-shadow:inset 0 0 0 5px #0003,0 0 28px currentColor;font-size:32px;font-weight:900;text-shadow:0 2px 4px #0008}
-.signal-orb.red{background:radial-gradient(circle at 30% 25%,#ffb1a6,#e43b37 55%,#8e151b);color:#fff}
-.signal-orb.gray{background:radial-gradient(circle at 30% 25%,#f2f4f7,#8b95a4 55%,#4a5360);color:#111827}
-.signal-orb.blue{background:radial-gradient(circle at 30% 25%,#b8e9ff,#409de7 55%,#1751a5);color:#fff}
-.signal-orb.purple{background:radial-gradient(circle at 30% 25%,#efc6ff,#a94fe0 55%,#54218c);color:#fff}
-#cue.ready .signal-orb{display:none}
-.keys{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}.keys button{min-height:72px}.keys b{display:block;font-size:18px}.keys small{color:var(--muted)}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}.stat{background:#111722;border-radius:12px;padding:12px}.stat span{color:var(--muted);font-size:12px;display:block}.stat strong{font-size:20px}
-.hp-bars{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:14px}
-.hp-card{background:#111722;padding:12px;border-radius:12px;border:1px solid var(--line)}
-.hp-bar-bg{width:100%;height:16px;background:#2a3446;border-radius:8px;overflow:hidden;margin-top:6px}
-.hp-bar-fill{height:100%;width:100%;transition:width .2s ease-in-out}
-.player-hp{background:var(--success)}.boss-hp{background:var(--danger)}
-#phase-badge{display:none;background:#ff9800;color:#000;font-weight:bold;padding:4px 8px;border-radius:6px;font-size:12px;margin-left:8px}
-#message{min-height:24px;margin-top:12px;color:var(--muted)}.hint{font-size:13px}
-.leaderboard-table{width:100%;border-collapse:collapse;margin-top:10px;font-size:14px}
-.leaderboard-table th,.leaderboard-table td{padding:8px 12px;text-align:left;border-bottom:1px solid var(--line)}
-.leaderboard-table th{color:var(--muted)}
-@media(max-width:540px){.keys{grid-template-columns:repeat(2,1fr)}.stats{grid-template-columns:repeat(2,1fr)}.panel{padding:14px}.hp-bars{grid-template-columns:1fr}}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deepwoken Reaction Trainer - Practice Parry, Dodge & Bosses</title>
+  <meta name="description" content="Free online reaction trainer for Roblox Deepwoken. Practice parry timings, dodge reactions, and fight bosses like Primadon, Duke, Ferryman, and Maestro.">
+  <meta name="keywords" content="deepwoken, deepwoken training, deepwoken reaction trainer, roblox deepwoken practice, parry practice">
+  <style>
+    :root {
+      --bg: #0f1115;
+      --card: #181b20;
+      --accent: #00e676;
+      --accent-danger: #ff5252;
+      --text: #e0e6ed;
+      --subtext: #8b98a5;
+    }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .card {
+      background: var(--card);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+    }
+    h1, h2 { margin-top: 0; }
+    .hp-bar-container { margin: 10px 0; }
+    .hp-bar {
+      height: 20px;
+      background: #2a2e37;
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+    .hp-fill {
+      height: 100%;
+      background: var(--accent);
+      width: 100%;
+      transition: width 0.2s ease;
+    }
+    .hp-fill.boss { background: var(--accent-danger); }
+    .hp-text {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      top: 0;
+      line-height: 20px;
+      font-size: 12px;
+      font-weight: bold;
+      color: #fff;
+      text-shadow: 0 0 4px #000;
+    }
+    .cue-box {
+      min-height: 120px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border: 2px dashed #2a2e37;
+      border-radius: 8px;
+      font-size: 1.5rem;
+    }
+    .signal-orb {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+    .signal-orb.gray { background: #757575; color: #fff; }
+    .signal-orb.red { background: #d32f2f; color: #fff; }
+    .signal-orb.purple { background: #7b1fa2; color: #fff; }
+    .signal-orb.blue { background: #1976d2; color: #fff; }
+    .controls, .settings { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px; }
+    button, select, input {
+      background: #2a2e37;
+      color: #fff;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    button.primary { background: var(--accent); color: #000; font-weight: bold; }
+    button.danger { background: var(--accent-danger); color: #fff; }
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { text-align: left; padding: 8px; border-bottom: 1px solid #2a2e37; }
+    th { color: var(--subtext); }
+  </style>
 </head>
-<body><main>
-<h1>Deepwoken Reaction & Boss Trainer</h1>
-<p>Parry/Dodge boss attacks, then click Left Mouse Button (LMB) to execute combo attacks during the opening window!</p>
-<div class="panel">
- <div class="row">
-  <div>
-    <label for="username">Player Nickname</label>
-    <input type="text" id="username" placeholder="Enter your name" maxlength="15" value="Player1">
-  </div>
-  <div>
-    <label for="boss">Select Boss</label>
-    <select id="boss">
-      <option value="random">Free Practice (Dummy)</option>
-      <option value="primadon" selected>Primadon (40,000 HP)</option>
-      <option value="elder_primadon">Elder Primadon (90,000 HP)</option>
-      <option value="maestro">Maestro Evengarde (15,000 HP)</option>
-      <option value="duke">Duke Erisia (15,000 HP)</option>
-      <option value="ferryman">Ferryman (15,000 HP)</option>
-    </select>
-  </div>
-  <div>
-    <label for="weapon">Select Weapon Class</label>
-    <select id="weapon">
-      <option value="heavy">Heavy (1,200 DMG · 1 Hit)</option>
-      <option value="medium" selected>Medium (600 DMG · 2 Hits Combo)</option>
-      <option value="light">Light (300 DMG · 3 Hits Combo)</option>
-    </select>
-  </div>
-  <div>
-    <label for="difficulty">Difficulty</label>
-    <select id="difficulty">
-      <option value="easy">Easy</option>
-      <option value="normal" selected>Normal</option>
-      <option value="hard">Hard</option>
-      <option value="expert">Expert</option>
-      <option value="extreme">Extreme</option>
-      <option value="impossible">Impossible</option>
-    </select>
-  </div>
-  <div>
-    <label for="rounds">Rounds</label>
-    <select id="rounds">
-      <option value="20">20</option>
-      <option value="50" selected>50</option>
-      <option value="75">75</option>
-      <option value="100">100</option>
-    </select>
-  </div>
-  <div style="flex: 0 0 100%; display: flex; gap: 10px; margin-top: 5px;">
-    <button id="start" class="primary" onclick="startPractice()">Start Combat</button>
-    <button id="end-btn" class="danger" onclick="stopPractice()" disabled>End Combat</button>
-  </div>
- </div>
+<body>
 
- <div class="hp-bars">
-  <div class="hp-card">
-    <div style="display:flex;justify-content:space-between"><span>Player HP</span><strong id="player-hp-text">600/600</strong></div>
-    <div class="hp-bar-bg"><div id="player-hp-fill" class="hp-bar-fill player-hp"></div></div>
-  </div>
-  <div class="hp-card">
-    <div style="display:flex;justify-content:space-between">
-      <div><span id="boss-name-label">Boss HP</span><span id="phase-badge">PHASE 2</span></div>
-      <strong id="boss-hp-text">40000/40000</strong>
+<div class="container">
+  <div class="card">
+    <h1>Deepwoken Reaction Trainer</h1>
+    
+    <div class="settings">
+      <div>
+        <label>Boss: </label>
+        <select id="boss">
+          <option value="random">Target Dummy</option>
+          <option value="primadon">Primadon</option>
+          <option value="elder_primadon">Elder Primadon</option>
+          <option value="duke">Duke Erisia</option>
+          <option value="ferryman">Ferryman</option>
+          <option value="maestro">Maestro Evengarde</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Difficulty: </label>
+        <select id="difficulty">
+          <option value="easy">Easy</option>
+          <option value="normal" selected>Normal</option>
+          <option value="hard">Hard</option>
+          <option value="expert">Expert</option>
+          <option value="extreme">Extreme</option>
+          <option value="impossible">Impossible</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Weapon: </label>
+        <select id="weapon">
+          <option value="medium">Medium</option>
+          <option value="heavy">Heavy</option>
+          <option value="light">Light</option>
+        </select>
+      </div>
+
+      <div>
+        <label>Rounds: </label>
+        <input type="number" id="rounds" value="20" min="5" max="100" style="width: 60px;">
+      </div>
     </div>
-    <div class="hp-bar-bg"><div id="boss-hp-fill" class="hp-bar-fill boss-hp"></div></div>
+
+    <div class="settings">
+      <div>
+        <label>Your Nickname: </label>
+        <input type="text" id="username" placeholder="Enter nickname for Leaderboard" maxlength="15">
+      </div>
+      <button id="start" class="primary" onclick="startPractice()">Start Combat</button>
+      <button id="end-btn" class="danger" onclick="stopPractice()" disabled>End Combat</button>
+    </div>
+
+    <!-- Health Bars -->
+    <div class="hp-bar-container">
+      <div style="display:flex; justify-between; font-size:12px;"><span id="boss-name-label">Target Dummy HP</span><span id="phase-badge" style="display:none; color:orange; font-weight:bold;">[PHASE 2]</span></div>
+      <div class="hp-bar"><div id="boss-hp-fill" class="hp-fill boss"></div><div id="boss-hp-text" class="hp-text">10000/10000</div></div>
+    </div>
+    
+    <div class="hp-bar-container">
+      <div style="font-size:12px;">Player HP</div>
+      <div class="hp-bar"><div id="player-hp-fill" class="hp-fill"></div><div id="player-hp-text" class="hp-text">600/600</div></div>
+    </div>
+
+    <!-- Cue Display Box -->
+    <div id="cue" class="cue-box">Press "Start Combat" to begin</div>
+    <p id="message" style="min-height: 24px; color: var(--subtext);"></p>
+
+    <div class="controls">
+      <button data-action="PARRY" disabled>Parry (F)</button>
+      <button data-action="DODGE" disabled>Dodge (Q)</button>
+      <button data-action="JUMP" disabled>Jump (Space)</button>
+      <button data-action="CROUCH" disabled>Crouch (Ctrl)</button>
+    </div>
+
+    <div style="display: flex; gap: 20px; font-size: 14px; color: var(--subtext);">
+      <div>Rounds: <span id="round" style="color: #fff;">0/20</span></div>
+      <div>Accuracy: <span id="accuracy" style="color: #fff;">—</span></div>
+      <div>Avg Time: <span id="average" style="color: #fff;">—</span></div>
+      <div>PvE Score: <span id="pve-score" style="color: var(--accent);">0</span></div>
+    </div>
   </div>
- </div>
 
- <div id="cue"><div><strong>READY?</strong><span>Select settings and click "Start Combat"</span></div></div>
-
- <div class="keys">
-  <button data-action="DODGE" disabled><b>Q</b><small>🔴 Roll / Dodge</small></button>
-  <button data-action="PARRY" disabled><b>F</b><small>⚪ Parry</small></button>
-  <button data-action="CROUCH" disabled><b>Ctrl</b><small>🔵 Crouch</small></button>
-  <button data-action="JUMP" disabled><b>Space</b><small>🟣 Jump</small></button>
- </div>
-
- <div class="stats">
-  <div class="stat"><span>Round</span><strong id="round">0/50</strong></div>
-  <div class="stat"><span>Accuracy</span><strong id="accuracy">—</strong></div>
-  <div class="stat"><span>Avg Response</span><strong id="average">—</strong></div>
-  <div class="stat"><span>Your PvE Score</span><strong id="pve-score" style="color:var(--accent)">0</strong></div>
- </div>
- <div id="message" role="status">Defend with keyboard, then CLICK ANYWHERE to attack during opening window!</div>
+  <!-- Global Leaderboard Card -->
+  <div class="card">
+    <h2>🏆 Global Leaderboard (Top Players)</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>Player</th>
+          <th>PvE Score</th>
+        </tr>
+      </thead>
+      <tbody id="leaderboard-body">
+        <tr><td colspan="3" style="text-align:center">Loading leaderboard...</td></tr>
+      </tbody>
+    </table>
+  </div>
 </div>
 
-<!-- Блок Таблицы Лидеров -->
-<div class="panel">
-  <h3 style="margin:0 0 10px;font-size:18px">🏆 Leaderboard (Top Players)</h3>
-  <table class="leaderboard-table">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Player</th>
-        <th>PvE Score</th>
-      </tr>
-    </thead>
-    <tbody id="leaderboard-body">
-      <!-- Автоматически заполняется при победах -->
-    </tbody>
-  </table>
-</div>
-
-<div class="panel hint">
-  <b>PvE Score Rewards:</b> 100% Accuracy = <b>+3 Score</b> | 90-99% Accuracy = <b>+2 Score</b> | 40-89% Accuracy = <b>+1 Score</b>.
-</div>
-</main>
+<!-- Подключаем библиотеку Firebase (Compat Версия) -->
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
 <script>
 const $=id=>document.getElementById(id);
 const names={PARRY:"PARRY",DODGE:"ROLL / DODGE",JUMP:"JUMP",CROUCH:"CROUCH"};
 const colors={PARRY:"gray",DODGE:"red",JUMP:"purple",CROUCH:"blue"};
 const symbols={PARRY:"F",DODGE:"Q",JUMP:"↑",CROUCH:"↓"};
+
+// 🔑 Вставлены твои индивидуальные ключи Firebase
+const firebaseConfig = {
+  apiKey: "AIzaSyDMSC3W6Wjju5G0c2kofKlWij0PiUrLZ_0",
+  authDomain: "traningmaster-e1ee1.firebaseapp.com",
+  databaseURL: "https://traningmaster-e1ee1-default-rtdb.firebaseio.com",
+  projectId: "traningmaster-e1ee1",
+  storageBucket: "traningmaster-e1ee1.firebasestorage.app",
+  messagingSenderId: "793487316364",
+  appId: "1:793487316364:web:1f5933cfe0e15ce04e72a9"
+};
+
+// Инициализация базы данных
+firebase.initializeApp(firebaseConfig);
+const database = firebase.database();
 
 const weapons = {
   heavy: { name: "Heavy", dmg: 1200, maxCombo: 1, cooldown: 400 },
@@ -168,7 +249,7 @@ const bossStats = {
   ferryman: { name: "Ferryman", hp: 15000, damage: 75, diff: "expert", moves: ["PARRY","DODGE","JUMP"] }
 };
 
-let active=false, waiting=false, canAttack=false, attackTimer=null, target="", shownAt=0, timer=null, gapTimer=null, index=0, total=50, hits=0, times=[], results=[];
+let active=false, waiting=false, canAttack=false, attackTimer=null, target="", shownAt=0, timer=null, gapTimer=null, index=0, total=20, hits=0, times=[], results=[];
 let playerMaxHp=600, playerHp=600, bossMaxHp=40000, bossHp=40000;
 let isPhaseTwo=false, lastAttackTime=0, currentComboHits=0;
 let totalPveScore = Number(localStorage.getItem("pve_score") || 0);
@@ -177,8 +258,8 @@ function enable(on){document.querySelectorAll("[data-action]").forEach(b=>b.disa
 
 function cue(title,sub,action=null){
  const box=$("cue");
- if(action){box.classList.remove("ready");box.innerHTML=`<div><div class="signal-orb ${colors[action]}">${symbols[action]}</div><strong>${title}</strong><span>${sub}</span></div>`}
- else {box.classList.add("ready");box.innerHTML=`<div><strong>${title}</strong><span>${sub}</span></div>`}
+ if(action){box.innerHTML=`<div><div class="signal-orb ${colors[action]}">${symbols[action]}</div><div><strong>${title}</strong></div><span>${sub}</span></div>`}
+ else {box.innerHTML=`<div><strong>${title}</strong><br><span>${sub}</span></div>`}
 }
 
 function getDifficultySettings() {
@@ -245,8 +326,7 @@ function waitNext(){
 }
 
 function respond(action){
- if(!active)return;
- if(!waiting) return;
+ if(!active || !waiting) return;
  
  clearTimeout(timer);waiting=false;
  const ms=Math.round(performance.now()-shownAt),ok=action===target;
@@ -294,127 +374,4 @@ function playerAttack() {
     canAttack = false;
     clearTimeout(attackTimer);
     $("message").textContent = `FULL COMBO! Dealt ${w.dmg * w.maxCombo} total DMG with ${w.name} weapon!`;
-    index++; update();
-    setTimeout(waitNext, 400);
-  } else {
-    $("message").textContent = `Hit ${currentComboHits}/${w.maxCombo}! Dealt ${w.dmg} DMG! Click again!`;
-  }
-}
-
-function updateLeaderboard(name, score) {
-  let board = JSON.parse(localStorage.getItem("global_leaderboard") || "[]");
-  const existingIndex = board.findIndex(p => p.name === name);
-  if(existingIndex !== -1) {
-    board[existingIndex].score = Math.max(board[existingIndex].score, score);
-  } else {
-    board.push({ name, score });
-  }
-  board.sort((a, b) => b.score - a.score);
-  board = board.slice(0, 5); // Топ-5
-  localStorage.setItem("global_leaderboard", JSON.stringify(board));
-  renderLeaderboard();
-}
-
-function renderLeaderboard() {
-  let board = JSON.parse(localStorage.getItem("global_leaderboard") || "[]");
-  if(board.length === 0) {
-    board = [{ name: "Player1", score: totalPveScore }];
-  }
-  const tbody = $("leaderboard-body");
-  tbody.innerHTML = board.map((p, i) => `
-    <tr>
-      <td><b>#${i + 1}</b></td>
-      <td>${p.name}</td>
-      <td><strong style="color:var(--accent)">${p.score} pts</strong></td>
-    </tr>
-  `).join("");
-}
-
-function update(){
- $("round").textContent=`${Math.min(index,total)}/${total}`;
- $("accuracy").textContent=results.length?Math.round(hits/results.length*100)+"%":"—";
- $("average").textContent=times.length?Math.round(times.reduce((a,b)=>a+b,0)/times.length)+" ms":"—";
- $("pve-score").textContent = totalPveScore;
-}
-
-function finish(){
- active=false;waiting=false;canAttack=false;enable(false);
- $("start").disabled=false;$("start").textContent="Start Combat";
- $("end-btn").disabled=true;
- 
- const acc = results.length ? Math.round(hits/results.length*100) : 0;
- let scoreGained = 0;
- 
- if(playerHp > 0) {
-   if(acc === 100) scoreGained = 3;
-   else if(acc >= 90) scoreGained = 2;
-   else if(acc >= 40) scoreGained = 1;
- }
-
- if(scoreGained > 0) {
-   totalPveScore += scoreGained;
-   localStorage.setItem("pve_score", totalPveScore);
-   const username = $("username").value.trim() || "Anonymous";
-   updateLeaderboard(username, totalPveScore);
- }
-
- let endMsg = playerHp <= 0 ? "YOU DIED! The boss defeated you." : bossHp <= 0 ? "VICTORY! Boss Slain!" : "TRAINING FINISHED!";
- cue(endMsg, `Accuracy: ${acc}% · Gained +${scoreGained} PvE Score!`);
- $("message").textContent=times.length?`Average Reaction: ${Math.round(times.reduce((a,b)=>a+b,0)/times.length)} ms.`:"Game Over.";
- update();
-}
-
-function stopPractice(){
- if(!active) return;
- clearTimeout(timer);clearTimeout(gapTimer);clearTimeout(attackTimer);
- active=false;waiting=false;canAttack=false;enable(false);
- $("start").disabled=false;$("start").textContent="Start Combat";
- $("end-btn").disabled=true;
- cue("COMBAT ENDED", "Combat session was manually terminated.");
- $("message").textContent = "Practice ended by user.";
-}
-
-function startPractice(){
- clearTimeout(timer);clearTimeout(gapTimer);clearTimeout(attackTimer);
- const bossKey = $("boss").value;
- const b = bossStats[bossKey];
- bossMaxHp = bossHp = b.hp;
- playerMaxHp = playerHp = 600;
- isPhaseTwo = false;
- $("phase-badge").style.display = "none";
- $("boss-name-label").textContent = `${b.name} HP`;
- updateHpUI();
-
- active=true;waiting=false;canAttack=false;index=hits=0;times=[];results=[];total=Number($("rounds").value);
- $("start").disabled=true;$("start").textContent="In Combat…";
- $("end-btn").disabled=false;
- enable(true);
- update();
- waitNext();
-}
-
-document.addEventListener("click", (e) => {
-  if(e.button === 0 && !e.target.closest("select") && !e.target.closest("button") && !e.target.closest("input")) {
-    playerAttack();
-  }
-});
-
-document.querySelectorAll("[data-action]").forEach(b=>b.addEventListener("click",()=>respond(b.dataset.action)));
-
-document.addEventListener("keydown",e=>{
- if(!active) return;
- if(e.repeat) return;
- 
- if(e.code === "KeyF"){e.preventDefault();respond("PARRY");return}
- if(e.code === "KeyQ"){e.preventDefault();respond("DODGE");return}
- if(e.code === "Space"){e.preventDefault();respond("JUMP");return}
- if(e.code === "ControlLeft" || e.code === "ControlRight" || e.key === "Control"){
-   e.preventDefault();
-   respond("CROUCH");
-   return;
- }
-});
-
-renderLeaderboard();
-$("pve-score").textContent = totalPveScore;
-</script></body></html>
+    index++;
