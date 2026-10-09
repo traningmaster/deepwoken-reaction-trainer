@@ -163,7 +163,7 @@
 
     <!-- Health Bars -->
     <div class="hp-bar-container">
-      <div style="display:flex; justify-between; font-size:12px;"><span id="boss-name-label">Target Dummy HP</span><span id="phase-badge" style="display:none; color:orange; font-weight:bold;">[PHASE 2]</span></div>
+      <div style="display:flex; justify-content:space-between; font-size:12px;"><span id="boss-name-label">Target Dummy HP</span><span id="phase-badge" style="display:none; color:orange; font-weight:bold;">[PHASE 2]</span></div>
       <div class="hp-bar"><div id="boss-hp-fill" class="hp-fill boss"></div><div id="boss-hp-text" class="hp-text">10000/10000</div></div>
     </div>
     
@@ -209,7 +209,7 @@
   </div>
 </div>
 
-<!-- Подключаем библиотеку Firebase (Compat Версия) -->
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
 
@@ -219,7 +219,7 @@ const names={PARRY:"PARRY",DODGE:"ROLL / DODGE",JUMP:"JUMP",CROUCH:"CROUCH"};
 const colors={PARRY:"gray",DODGE:"red",JUMP:"purple",CROUCH:"blue"};
 const symbols={PARRY:"F",DODGE:"Q",JUMP:"↑",CROUCH:"↓"};
 
-// 🔑 Вставлены твои индивидуальные ключи Firebase
+// Твои ключи Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyDMSC3W6Wjju5G0c2kofKlWij0PiUrLZ_0",
   authDomain: "traningmaster-e1ee1.firebaseapp.com",
@@ -230,9 +230,20 @@ const firebaseConfig = {
   appId: "1:793487316364:web:1f5933cfe0e15ce04e72a9"
 };
 
-// Инициализация базы данных
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
+
+// Получаем или создаём уникальный ID устройства для игрока
+let userId = localStorage.getItem("deepwoken_user_id");
+if (!userId) {
+  userId = "usr_" + Math.random().toString(36).substr(2, 9);
+  localStorage.setItem("deepwoken_user_id", userId);
+}
+
+// Загрузка сохранённого ника
+if (localStorage.getItem("deepwoken_username")) {
+  $("username").value = localStorage.getItem("deepwoken_username");
+}
 
 const weapons = {
   heavy: { name: "Heavy", dmg: 1200, maxCombo: 1, cooldown: 400 },
@@ -374,4 +385,135 @@ function playerAttack() {
     canAttack = false;
     clearTimeout(attackTimer);
     $("message").textContent = `FULL COMBO! Dealt ${w.dmg * w.maxCombo} total DMG with ${w.name} weapon!`;
-    index++;
+    index++; update();
+    setTimeout(waitNext, 450);
+  } else {
+    $("message").textContent = `Hit ${currentComboHits}/${w.maxCombo}! Dealt ${w.dmg} DMG! Click again!`;
+  }
+}
+
+// 🌐 ГЛОБАЛЬНОЕ СОХРАНЕНИЕ ПО УНИКАЛЬНОМУ ID УСТРОЙСТВА
+function saveToGlobalLeaderboard(username, newScore) {
+  if(!username || username.trim() === "") username = "Anonymous Player";
+  localStorage.setItem("deepwoken_username", username);
+
+  const userRef = database.ref('leaderboard/' + userId);
+  userRef.set({ name: username, score: newScore });
+}
+
+// 🌐 ЧТЕНИЕ ТОПА ИЗ FIREBASE
+function listenGlobalLeaderboard() {
+  database.ref('leaderboard').orderByChild('score').limitToLast(10).on('value', (snapshot) => {
+    const players = [];
+    snapshot.forEach((child) => {
+      players.push(child.val());
+    });
+    players.sort((a, b) => b.score - a.score);
+
+    const tbody = $("leaderboard-body");
+    if(tbody) {
+      if(players.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="3" style="text-align:center">No records yet. Be the first!</td></tr>`;
+      } else {
+        tbody.innerHTML = players.map((p, i) => `
+          <tr>
+            <td><b>#${i + 1}</b></td>
+            <td>${p.name}</td>
+            <td><strong style="color:var(--accent)">${p.score} pts</strong></td>
+          </tr>
+        `).join("");
+      }
+    }
+  });
+}
+
+function update(){
+ $("round").textContent=`${Math.min(index,total)}/${total}`;
+ $("accuracy").textContent=results.length?Math.round(hits/results.length*100)+"%":"—";
+ $("average").textContent=times.length?Math.round(times.reduce((a,b)=>a+b,0)/times.length)+" ms":"—";
+ $("pve-score").textContent = totalPveScore;
+}
+
+function finish(){
+ active=false;waiting=false;canAttack=false;enable(false);
+ $("start").disabled=false;$("start").textContent="Start Combat";
+ $("end-btn").disabled=true;
+ 
+ const acc = results.length ? Math.round(hits/results.length*100) : 0;
+ let scoreGained = 0;
+ 
+ if(playerHp > 0) {
+   if(acc === 100) scoreGained = 3;
+   else if(acc >= 90) scoreGained = 2;
+   else if(acc >= 40) scoreGained = 1;
+ }
+
+ if(scoreGained > 0) {
+   totalPveScore += scoreGained;
+   localStorage.setItem("pve_score", totalPveScore);
+   const username = $("username").value.trim();
+   saveToGlobalLeaderboard(username, totalPveScore);
+ }
+
+ let endMsg = playerHp <= 0 ? "YOU DIED! The boss defeated you." : bossHp <= 0 ? "VICTORY! Boss Slain!" : "TRAINING FINISHED!";
+ cue(endMsg, `Accuracy: ${acc}% · Gained +${scoreGained} PvE Score!`);
+ $("message").textContent=times.length?`Average Reaction: ${Math.round(times.reduce((a,b)=>a+b,0)/times.length)} ms.`:"Game Over.";
+ update();
+}
+
+function stopPractice(){
+ if(!active) return;
+ clearTimeout(timer);clearTimeout(gapTimer);clearTimeout(attackTimer);
+ active=false;waiting=false;canAttack=false;enable(false);
+ $("start").disabled=false;$("start").textContent="Start Combat";
+ $("end-btn").disabled=true;
+ cue("COMBAT ENDED", "Combat session was manually terminated.");
+ $("message").textContent = "Practice ended by user.";
+}
+
+function startPractice(){
+ clearTimeout(timer);clearTimeout(gapTimer);clearTimeout(attackTimer);
+ const bossKey = $("boss").value;
+ const b = bossStats[bossKey];
+ bossMaxHp = bossHp = b.hp;
+ playerMaxHp = playerHp = 600;
+ isPhaseTwo = false;
+ $("phase-badge").style.display = "none";
+ $("boss-name-label").textContent = `${b.name} HP`;
+ updateHpUI();
+
+ active=true;waiting=false;canAttack=false;index=hits=0;times=[];results=[];total=Number($("rounds").value);
+ $("start").disabled=true;$("start").textContent="In Combat…";
+ $("end-btn").disabled=false;
+ enable(true);
+ update();
+ waitNext();
+}
+
+document.addEventListener("click", (e) => {
+  if(e.button === 0 && !e.target.closest("select") && !e.target.closest("button") && !e.target.closest("input")) {
+    playerAttack();
+  }
+});
+
+document.querySelectorAll("[data-action]").forEach(b=>b.addEventListener("click",()=>respond(b.dataset.action)));
+
+document.addEventListener("keydown",e=>{
+ if(!active) return;
+ if(e.repeat) return;
+ 
+ if(e.code === "KeyF"){e.preventDefault();respond("PARRY");return}
+ if(e.code === "KeyQ"){e.preventDefault();respond("DODGE");return}
+ if(e.code === "Space"){e.preventDefault();respond("JUMP");return}
+ if(e.code === "ControlLeft" || e.code === "ControlRight" || e.key === "Control"){
+   e.preventDefault();
+   respond("CROUCH");
+   return;
+ }
+});
+
+listenGlobalLeaderboard();
+$("pve-score").textContent = totalPveScore;
+</script>
+</body>
+</html>
