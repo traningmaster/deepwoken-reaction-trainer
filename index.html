@@ -37,7 +37,7 @@
       border-radius: 12px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.5);
     }
-    h1, h2 { margin-top: 0; }
+    h1, h2, h3 { margin-top: 0; }
     .hp-bar-container { margin: 10px 0; }
     .hp-bar {
       height: 20px;
@@ -104,6 +104,30 @@
     table { width: 100%; border-collapse: collapse; margin-top: 10px; }
     th, td { text-align: left; padding: 8px; border-bottom: 1px solid #2a2e37; }
     th { color: var(--subtext); }
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      margin-top: 10px;
+    }
+    @media (max-width: 600px) {
+      .info-grid { grid-template-columns: 1fr; }
+    }
+    .info-box {
+      background: #22262e;
+      padding: 12px;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    .info-box ul { padding-left: 18px; margin: 5px 0; }
+    .admin-panel {
+      background: #2c1a1a;
+      border: 1px solid #ff5252;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 15px;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -115,8 +139,8 @@
     <div class="settings">
       <div>
         <label>Boss: </label>
-        <select id="boss">
-          <option value="random">Target Dummy</option>
+        <select id="boss" onchange="toggleDummyMode()">
+          <option value="random">Target Dummy (Infinite)</option>
           <option value="primadon">Primadon</option>
           <option value="elder_primadon">Elder Primadon</option>
           <option value="duke">Duke Erisia</option>
@@ -128,12 +152,12 @@
       <div>
         <label>Difficulty: </label>
         <select id="difficulty">
-          <option value="easy">Easy</option>
-          <option value="normal" selected>Normal</option>
-          <option value="hard">Hard</option>
-          <option value="expert">Expert</option>
-          <option value="extreme">Extreme</option>
-          <option value="impossible">Impossible</option>
+          <option value="easy">Easy (0 pts)</option>
+          <option value="normal" selected>Normal (5 pts)</option>
+          <option value="hard">Hard (10 pts)</option>
+          <option value="expert">Expert (20 pts)</option>
+          <option value="extreme">Extreme (35 pts)</option>
+          <option value="impossible">Impossible (50 pts)</option>
         </select>
       </div>
 
@@ -146,7 +170,7 @@
         </select>
       </div>
 
-      <div>
+      <div id="rounds-wrapper">
         <label>Rounds: </label>
         <input type="number" id="rounds" value="20" min="5" max="100" style="width: 60px;">
       </div>
@@ -164,7 +188,7 @@
     <!-- Health Bars -->
     <div class="hp-bar-container">
       <div style="display:flex; justify-content:space-between; font-size:12px;"><span id="boss-name-label">Target Dummy HP</span><span id="phase-badge" style="display:none; color:orange; font-weight:bold;">[PHASE 2]</span></div>
-      <div class="hp-bar"><div id="boss-hp-fill" class="hp-fill boss"></div><div id="boss-hp-text" class="hp-text">10000/10000</div></div>
+      <div class="hp-bar"><div id="boss-hp-fill" class="hp-fill boss"></div><div id="boss-hp-text" class="hp-text">∞ / ∞</div></div>
     </div>
     
     <div class="hp-bar-container">
@@ -189,6 +213,16 @@
       <div>Avg Time: <span id="average" style="color: #fff;">—</span></div>
       <div>PvE Score: <span id="pve-score" style="color: var(--accent);">0</span></div>
     </div>
+
+    <!-- Secret Admin Panel -->
+    <div id="admin-panel" class="admin-panel">
+      <h3 style="color:#ff5252; margin-bottom:8px;">⚡ Admin Controls</h3>
+      <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <input type="number" id="admin-score-input" placeholder="Set Custom PvE Score" style="width:180px;">
+        <button onclick="adminSetScore()" class="primary">Set Score</button>
+        <button onclick="adminKillBoss()" class="danger">Kill Current Boss (Instant)</button>
+      </div>
+    </div>
   </div>
 
   <!-- Global Leaderboard Card -->
@@ -207,6 +241,35 @@
       </tbody>
     </table>
   </div>
+
+  <!-- Info & Guides Card -->
+  <div class="card">
+    <h2>ℹ️ Game Guide & Difficulty Rewards</h2>
+    <div class="info-grid">
+      <div class="info-box">
+        <h3 style="color:var(--accent)">🎯 Difficulty & Points Reward</h3>
+        <ul>
+          <li><b>Easy:</b> 0 PvE Score</li>
+          <li><b>Normal:</b> +5 PvE Score</li>
+          <li><b>Hard:</b> +10 PvE Score</li>
+          <li><b>Expert:</b> +20 PvE Score</li>
+          <li><b>Extreme:</b> +35 PvE Score</li>
+          <li><b>Impossible:</b> +50 PvE Score</li>
+        </ul>
+        <p style="font-size:12px; color:var(--subtext); margin-bottom:0;">* Defeat boss with <b>≥70% accuracy</b> to earn score.</p>
+      </div>
+
+      <div class="info-box">
+        <h3 style="color:var(--accent)">⚔️ Weapon Stats & Damage</h3>
+        <ul>
+          <li><b>Heavy Weapon:</b> 1200 DMG per strike | 1 Hit Combo | Cooldown 400ms</li>
+          <li><b>Medium Weapon:</b> 600 DMG per strike | 2 Hit Combo | Cooldown 200ms</li>
+          <li><b>Light Weapon:</b> 300 DMG per strike | 3 Hit Combo | Cooldown 120ms</li>
+        </ul>
+        <p style="font-size:12px; color:var(--subtext); margin-bottom:0;">* Target Dummy has infinite HP for unlimited parry practice.</p>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- Firebase SDKs -->
@@ -219,7 +282,6 @@ const names={PARRY:"PARRY",DODGE:"ROLL / DODGE",JUMP:"JUMP",CROUCH:"CROUCH"};
 const colors={PARRY:"gray",DODGE:"red",JUMP:"purple",CROUCH:"blue"};
 const symbols={PARRY:"F",DODGE:"Q",JUMP:"↑",CROUCH:"↓"};
 
-// Твои ключи Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyDMSC3W6Wjju5G0c2kofKlWij0PiUrLZ_0",
   authDomain: "traningmaster-e1ee1.firebaseapp.com",
@@ -233,17 +295,24 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const database = firebase.database();
 
-// Получаем или создаём уникальный ID устройства для игрока
 let userId = localStorage.getItem("deepwoken_user_id");
 if (!userId) {
   userId = "usr_" + Math.random().toString(36).substr(2, 9);
   localStorage.setItem("deepwoken_user_id", userId);
 }
 
-// Загрузка сохранённого ника
 if (localStorage.getItem("deepwoken_username")) {
   $("username").value = localStorage.getItem("deepwoken_username");
 }
+
+const difficultyPoints = {
+  easy: 0,
+  normal: 5,
+  hard: 10,
+  expert: 20,
+  extreme: 35,
+  impossible: 50
+};
 
 const weapons = {
   heavy: { name: "Heavy", dmg: 1200, maxCombo: 1, cooldown: 400 },
@@ -252,18 +321,28 @@ const weapons = {
 };
 
 const bossStats = {
-  random: { name: "Target Dummy", hp: 10000, damage: 50, diff: "normal", moves: ["PARRY","DODGE","JUMP","CROUCH"] },
-  primadon: { name: "Primadon", hp: 40000, damage: 80, diff: "normal", moves: ["PARRY","DODGE"] },
-  elder_primadon: { name: "Elder Primadon", hp: 90000, damage: 110, diff: "hard", moves: ["PARRY","DODGE","JUMP"] },
-  maestro: { name: "Maestro Evengarde", hp: 15000, damage: 70, diff: "hard", moves: ["PARRY","DODGE","CROUCH"] },
-  duke: { name: "Duke Erisia", hp: 15000, damage: 65, diff: "normal", moves: ["PARRY","DODGE","CROUCH"] },
-  ferryman: { name: "Ferryman", hp: 15000, damage: 75, diff: "expert", moves: ["PARRY","DODGE","JUMP"] }
+  random: { name: "Target Dummy", hp: Infinity, damage: 0, moves: ["PARRY","DODGE","JUMP","CROUCH"] },
+  primadon: { name: "Primadon", hp: 40000, damage: 80, moves: ["PARRY","DODGE"] },
+  elder_primadon: { name: "Elder Primadon", hp: 90000, damage: 110, moves: ["PARRY","DODGE","JUMP"] },
+  maestro: { name: "Maestro Evengarde", hp: 15000, damage: 70, moves: ["PARRY","DODGE","CROUCH"] },
+  duke: { name: "Duke Erisia", hp: 15000, damage: 65, moves: ["PARRY","DODGE","CROUCH"] },
+  ferryman: { name: "Ferryman", hp: 15000, damage: 75, moves: ["PARRY","DODGE","JUMP"] }
 };
 
 let active=false, waiting=false, canAttack=false, attackTimer=null, target="", shownAt=0, timer=null, gapTimer=null, index=0, total=20, hits=0, times=[], results=[];
 let playerMaxHp=600, playerHp=600, bossMaxHp=40000, bossHp=40000;
 let isPhaseTwo=false, lastAttackTime=0, currentComboHits=0;
 let totalPveScore = Number(localStorage.getItem("pve_score") || 0);
+
+function toggleDummyMode() {
+  const bossKey = $("boss").value;
+  if (bossKey === "random") {
+    $("rounds-wrapper").style.display = "none";
+    $("boss-hp-text").textContent = "∞ / ∞";
+  } else {
+    $("rounds-wrapper").style.display = "inline-block";
+  }
+}
 
 function enable(on){document.querySelectorAll("[data-action]").forEach(b=>b.disabled=!on)}
 
@@ -274,9 +353,7 @@ function cue(title,sub,action=null){
 }
 
 function getDifficultySettings() {
-  const bossKey = $("boss").value;
-  const diff = bossKey === "random" ? $("difficulty").value : bossStats[bossKey].diff;
-  
+  const diff = $("difficulty").value;
   let base = { minDelay: 400, addDelay: 650, timeout: 680 };
   if(diff === "easy") base = { minDelay: 1000, addDelay: 1200, timeout: 1400 };
   else if(diff === "normal") base = { minDelay: 700, addDelay: 950, timeout: 1050 };
@@ -294,6 +371,15 @@ function getDifficultySettings() {
 }
 
 function updateHpUI() {
+  const bossKey = $("boss").value;
+  if (bossKey === "random") {
+    $("player-hp-text").textContent = "600 / 600";
+    $("player-hp-fill").style.width = "100%";
+    $("boss-hp-text").textContent = "∞ / ∞";
+    $("boss-hp-fill").style.width = "100%";
+    return;
+  }
+
   $("player-hp-text").textContent = `${Math.max(0, playerHp)}/${playerMaxHp}`;
   $("player-hp-fill").style.width = `${Math.max(0, (playerHp / playerMaxHp) * 100)}%`;
   
@@ -309,14 +395,15 @@ function updateHpUI() {
 
 function waitNext(){
  if(!active)return;
- if(index>=total || playerHp <= 0 || bossHp <= 0){finish();return}
+ const bossKey = $("boss").value;
+ if(bossKey !== "random" && (index >= total || playerHp <= 0 || bossHp <= 0)){ finish(); return; }
+
  waiting=false;canAttack=false;target="";currentComboHits=0;
  cue("DEFEND!", isPhaseTwo ? "⚡ PHASE 2 ATTACK INCOMING!" : "Watch for the attack signal!");
  const cfg = getDifficultySettings();
  const delay = cfg.minDelay + Math.random() * cfg.addDelay;
  gapTimer=setTimeout(()=>{
   if(!active)return;
-  const bossKey = $("boss").value;
   const allowedMoves = bossStats[bossKey].moves;
   target=allowedMoves[Math.floor(Math.random()*allowedMoves.length)];
   waiting=true;shownAt=performance.now();cue(names[target],"REACT!",target);
@@ -325,9 +412,9 @@ function waitNext(){
       waiting=false;
       results.push(false);
       const boss = bossStats[bossKey];
-      playerHp -= boss.damage;
+      if (bossKey !== "random") playerHp -= boss.damage;
       updateHpUI();
-      $("message").textContent=`Too slow! ${boss.name} hit you for ${boss.damage} DMG.`;
+      $("message").textContent= bossKey === "random" ? "Missed reaction!" : `Too slow! ${boss.name} hit you for ${boss.damage} DMG.`;
       update();
       index++;
       waitNext();
@@ -362,8 +449,8 @@ function respond(action){
      }
    }, 1300);
  } else {
-   playerHp -= boss.damage;
-   $("message").textContent=`Failed defence! Needed ${names[target]}. Took ${boss.damage} DMG.`;
+   if (bossKey !== "random") playerHp -= boss.damage;
+   $("message").textContent= bossKey === "random" ? "Failed defence!" : `Failed defence! Needed ${names[target]}. Took ${boss.damage} DMG.`;
    updateHpUI();
    index++; update(); waitNext();
  }
@@ -378,7 +465,8 @@ function playerAttack() {
   
   lastAttackTime = now;
   currentComboHits++;
-  bossHp -= w.dmg;
+  const bossKey = $("boss").value;
+  if(bossKey !== "random") bossHp -= w.dmg;
   updateHpUI();
 
   if(currentComboHits >= w.maxCombo) {
@@ -392,7 +480,6 @@ function playerAttack() {
   }
 }
 
-// 🌐 ГЛОБАЛЬНОЕ СОХРАНЕНИЕ ПО УНИКАЛЬНОМУ ID УСТРОЙСТВА
 function saveToGlobalLeaderboard(username, newScore) {
   if(!username || username.trim() === "") username = "Anonymous Player";
   localStorage.setItem("deepwoken_username", username);
@@ -401,7 +488,6 @@ function saveToGlobalLeaderboard(username, newScore) {
   userRef.set({ name: username, score: newScore });
 }
 
-// 🌐 ЧТЕНИЕ ТОПА ИЗ FIREBASE
 function listenGlobalLeaderboard() {
   database.ref('leaderboard').orderByChild('score').limitToLast(10).on('value', (snapshot) => {
     const players = [];
@@ -428,10 +514,12 @@ function listenGlobalLeaderboard() {
 }
 
 function update(){
- $("round").textContent=`${Math.min(index,total)}/${total}`;
+ const bossKey = $("boss").value;
+ $("round").textContent = bossKey === "random" ? `${index} (∞)` : `${Math.min(index,total)}/${total}`;
  $("accuracy").textContent=results.length?Math.round(hits/results.length*100)+"%":"—";
  $("average").textContent=times.length?Math.round(times.reduce((a,b)=>a+b,0)/times.length)+" ms":"—";
  $("pve-score").textContent = totalPveScore;
+ checkAdminAccess();
 }
 
 function finish(){
@@ -439,13 +527,16 @@ function finish(){
  $("start").disabled=false;$("start").textContent="Start Combat";
  $("end-btn").disabled=true;
  
+ const bossKey = $("boss").value;
  const acc = results.length ? Math.round(hits/results.length*100) : 0;
+ const selectedDiff = $("difficulty").value;
  let scoreGained = 0;
  
- if(playerHp > 0) {
-   if(acc === 100) scoreGained = 3;
-   else if(acc >= 90) scoreGained = 2;
-   else if(acc >= 40) scoreGained = 1;
+ // Очки даются только при точности >= 70%
+ if(bossKey !== "random" && playerHp > 0 && bossHp <= 0) {
+   if(acc >= 70) {
+     scoreGained = difficultyPoints[selectedDiff] || 0;
+   }
  }
 
  if(scoreGained > 0) {
@@ -456,7 +547,7 @@ function finish(){
  }
 
  let endMsg = playerHp <= 0 ? "YOU DIED! The boss defeated you." : bossHp <= 0 ? "VICTORY! Boss Slain!" : "TRAINING FINISHED!";
- cue(endMsg, `Accuracy: ${acc}% · Gained +${scoreGained} PvE Score!`);
+ cue(endMsg, `Accuracy: ${acc}% · Gained +${scoreGained} PvE Score (${selectedDiff.toUpperCase()})`);
  $("message").textContent=times.length?`Average Reaction: ${Math.round(times.reduce((a,b)=>a+b,0)/times.length)} ms.`:"Game Over.";
  update();
 }
@@ -490,6 +581,33 @@ function startPractice(){
  waitNext();
 }
 
+// Admin Functions
+function checkAdminAccess() {
+  const nick = $("username").value.trim();
+  if(nick === "ADMIN123") {
+    $("admin-panel").style.display = "block";
+  }
+}
+
+function adminSetScore() {
+  const val = Number($("admin-score-input").value);
+  if(!isNaN(val)) {
+    totalPveScore = val;
+    localStorage.setItem("pve_score", totalPveScore);
+    saveToGlobalLeaderboard($("username").value.trim() || "Admin", totalPveScore);
+    update();
+    alert("PvE Score set to " + val);
+  }
+}
+
+function adminKillBoss() {
+  if(active) {
+    bossHp = 0;
+    updateHpUI();
+    finish();
+  }
+}
+
 document.addEventListener("click", (e) => {
   if(e.button === 0 && !e.target.closest("select") && !e.target.closest("button") && !e.target.closest("input")) {
     playerAttack();
@@ -499,6 +617,7 @@ document.addEventListener("click", (e) => {
 document.querySelectorAll("[data-action]").forEach(b=>b.addEventListener("click",()=>respond(b.dataset.action)));
 
 document.addEventListener("keydown",e=>{
+ if(e.code === "KeyK") { adminKillBoss(); }
  if(!active) return;
  if(e.repeat) return;
  
@@ -512,6 +631,7 @@ document.addEventListener("keydown",e=>{
  }
 });
 
+toggleDummyMode();
 listenGlobalLeaderboard();
 $("pve-score").textContent = totalPveScore;
 </script>
